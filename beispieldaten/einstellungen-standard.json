@@ -1,0 +1,117 @@
+{
+  "fName": "",
+  "fAdresse": "",
+  "fKontakt": "",
+  "fFuss": "",
+  "folieStaffel": [
+    {
+      "id": "st1",
+      "ab": 0,
+      "preis": 12
+    },
+    {
+      "id": "st2",
+      "ab": 10,
+      "preis": 10.5
+    },
+    {
+      "id": "st3",
+      "ab": 25,
+      "preis": 9.5
+    }
+  ],
+  "folieVersand": 0,
+  "rollenbreite": 56,
+  "abstand": 1,
+  "vorlauf": 10,
+  "schritt": 0.1,
+  "minMeter": 1,
+  "folieZuschlag": 0,
+  "sammelMeter": 10,
+  "ausschuss": 3,
+  "lohn": 15,
+  "ruestMin": 20,
+  "pressSek": 45,
+  "handlingSek": 30,
+  "fixkosten": [
+    {
+      "id": "fx1",
+      "name": "Raum / Miete",
+      "betrag": 150
+    },
+    {
+      "id": "fx2",
+      "name": "Strom",
+      "betrag": 40
+    },
+    {
+      "id": "fx3",
+      "name": "Heißpresse (Abschreibung)",
+      "betrag": 30
+    },
+    {
+      "id": "fx4",
+      "name": "Software, Versicherung",
+      "betrag": 40
+    }
+  ],
+  "prodStunden": 40,
+  "mgk": 5,
+  "fgk": 43,
+  "vwvt": 15,
+  "gewinn": 25,
+  "pauschale": 15,
+  "minAuftrag": 50,
+  "rundung": "0.1",
+  "gueltigTage": 14,
+  "mwst": 19,
+  "verpackung": 0.15,
+  "paketPreis": 6.5,
+  "artikel": [
+    {
+      "id": "a1",
+      "name": "T-Shirt",
+      "ekHell": 7,
+      "ekDunkel": 7,
+      "aufXXL": 1,
+      "auf3XL": 2,
+      "groessen": true
+    },
+    {
+      "id": "a2",
+      "name": "Hoodie",
+      "ekHell": 18,
+      "ekDunkel": 19,
+      "aufXXL": 2,
+      "auf3XL": 3,
+      "groessen": true
+    },
+    {
+      "id": "a3",
+      "name": "Poloshirt",
+      "ekHell": 11,
+      "ekDunkel": 11.5,
+      "aufXXL": 1.5,
+      "auf3XL": 2.5,
+      "groessen": true
+    },
+    {
+      "id": "a4",
+      "name": "Baumwolltasche",
+      "ekHell": 2.5,
+      "ekDunkel": 2.8,
+      "aufXXL": 0,
+      "auf3XL": 0,
+      "groessen": false
+    },
+    {
+      "id": "a5",
+      "name": "Kundenware (bringt Kunde mit)",
+      "ekHell": 0,
+      "ekDunkel": 0,
+      "aufXXL": 0,
+      "auf3XL": 0,
+      "groessen": true
+    }
+  ]
+}

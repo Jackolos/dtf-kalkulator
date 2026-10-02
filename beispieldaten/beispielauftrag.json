@@ -1,0 +1,106 @@
+{
+  "name": "Beispiel: Vereinsshirts",
+  "kunde": "Beispielkunde",
+  "kontakt": "",
+  "adresse": "",
+  "datum": "2026-10-02",
+  "liefertermin": "10 Werktage",
+  "angebotNr": "",
+  "notiz": "Beispielauftrag zum Ausprobieren",
+  "status": "angebot",
+  "gewinn": 25,
+  "rabatt": 0,
+  "skonto": 2,
+  "pauschale": 15,
+  "pakete": 1,
+  "sammel": false,
+  "zusatzMin": 15,
+  "zusatzKosten": 0,
+  "positionen": [
+    {
+      "id": "grynpidxl49",
+      "catId": "a1",
+      "name": "T-Shirt",
+      "farbe": "Schwarz",
+      "dunkel": true,
+      "ek": 7,
+      "aufXXL": 1,
+      "auf3XL": 2,
+      "ohneGroessen": false,
+      "menge": 10,
+      "groessen": {
+        "XS": 0,
+        "S": 4,
+        "M": 10,
+        "L": 9,
+        "XL": 5,
+        "XXL": 2,
+        "3XL": 0,
+        "4XL": 0,
+        "5XL": 0
+      },
+      "motive": [
+        {
+          "id": "ou1z53jxl49",
+          "name": "Brust links",
+          "w": 10,
+          "h": 10
+        },
+        {
+          "id": "s8ywwnsxl49",
+          "name": "Rücken groß",
+          "w": 30,
+          "h": 40
+        }
+      ]
+    },
+    {
+      "id": "vgoq7mbxl49",
+      "catId": "a2",
+      "name": "Hoodie",
+      "farbe": "Navy",
+      "dunkel": true,
+      "ek": 19,
+      "aufXXL": 2,
+      "auf3XL": 3,
+      "ohneGroessen": false,
+      "menge": 10,
+      "groessen": {
+        "XS": 0,
+        "S": 2,
+        "M": 4,
+        "L": 4,
+        "XL": 2,
+        "XXL": 0,
+        "3XL": 0,
+        "4XL": 0,
+        "5XL": 0
+      },
+      "motive": [
+        {
+          "id": "fpnigj5xl49",
+          "name": "Brust links",
+          "w": 10,
+          "h": 10
+        },
+        {
+          "id": "mv6mjn6xl49",
+          "name": "Rücken groß",
+          "w": 30,
+          "h": 40
+        }
+      ]
+    }
+  ],
+  "sheets": [],
+  "ist": {
+    "minuten": "",
+    "meter": "",
+    "kosten": ""
+  },
+  "updatedAt": 1790947555336,
+  "angebotNetto": 1037.6,
+  "gewinnEuro": 216.23,
+  "teile": 42,
+  "planCm": 1363
+}

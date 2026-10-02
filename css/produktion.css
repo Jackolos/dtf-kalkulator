@@ -1,0 +1,74 @@
+/* produktion – Stile für js/produktion.js (Plan, Textil-Einkauf, Sammel-Folie, Lager) */
+
+.pd-tabs { margin: 0 0 14px; }
+.pd-amber { color: var(--amber) !important; }
+.pd-acts { justify-content: flex-end; }
+.pd-sumbar { margin: 0 0 14px; }
+
+/* ---------- Plan: Kapazität und Kalender ---------- */
+.pd-cap { margin-bottom: 12px; font-size: 13px; }
+.pd-cap .mut { flex: 1 1 260px; }
+input.pd-capin { width: 90px; margin: 0; }
+.pd-calwrap { overflow-x: auto; }
+.pd-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; min-width: 640px; }
+.pd-dow { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--mut); padding: 0 4px; }
+.pd-dow.we { color: var(--faint); }
+.pd-day {
+  display: flex; flex-direction: column; gap: 5px; min-height: 92px; padding: 6px;
+  background: var(--field); border: 1px solid var(--line); border-radius: 10px; min-width: 0;
+}
+.pd-day.we { background: transparent; opacity: .7; }
+.pd-day.past { opacity: .45; }
+.pd-day.today { border-color: var(--acc); box-shadow: 0 0 0 1px var(--acc) inset; }
+.pd-dhead { display: flex; align-items: baseline; gap: 6px; font-size: 12px; }
+.pd-dhead em { font-style: normal; font-size: 10.5px; color: var(--acc-hi); font-weight: 700; }
+.pd-dhead span { margin-left: auto; color: var(--mut); font-size: 11px; }
+.pd-bar { height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.pd-bar i { display: block; height: 100%; background: var(--info); border-radius: 3px; }
+.pd-day.over .pd-bar i { background: var(--warn); }
+.pd-day.over .pd-dhead span { color: var(--warn); font-weight: 700; }
+.pd-dchips { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.pd-chip {
+  display: flex; justify-content: space-between; gap: 4px; width: 100%; padding: 3px 6px; font-size: 11.5px; font-weight: 600;
+  border-radius: 6px; background: var(--acc-soft); border: 1px solid transparent; border-left: 3px solid var(--p3); color: var(--fg); text-align: left;
+}
+.pd-chip.run { border-left-color: var(--p2); }
+.pd-chip:hover { border-color: var(--acc); }
+.pd-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.pd-chip small { color: var(--mut); flex: none; }
+
+/* Plan-Tabellen */
+.pd-plan input[type=date] { width: 150px; }
+.pd-plan .link { text-align: left; white-space: normal; font-size: 13px; }
+
+/* ---------- Auswahllisten (Textil, Sammel) ---------- */
+.pd-pickbtns { margin-bottom: 6px; }
+.pd-pick { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 4px 14px; }
+.pd-pick label.check { margin-top: 6px; }
+
+/* ---------- Textil-Einkauf ---------- */
+.pd-tex td.pd-res { color: var(--amber); font-weight: 700; }
+.tbl tr.pd-done td { opacity: .5; }
+
+/* ---------- Sammel-Folie ---------- */
+.pd-an { max-width: 360px; margin-bottom: 12px; }
+.pd-sheet { margin-top: 12px; }
+.pd-warn { border-left-color: var(--warn); }
+.pd-names { min-width: 180px; }
+
+/* ---------- Lager ---------- */
+.pd-lform { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; align-items: end; }
+.pd-lform button { height: 38px; }
+.pd-qty { display: inline-flex; align-items: center; gap: 4px; }
+.pd-qty button { min-width: 28px; padding: 4px 8px; }
+.tbl .pd-qty input[type=number] { width: 64px; text-align: center; }
+.tbl input.pd-note { min-width: 140px; }
+
+/* ---------- Handy ---------- */
+@media (max-width: 560px) {
+  .pd-acts { justify-content: stretch; }
+  .pd-acts button { flex: 1 1 100%; }
+  .pd-pick { grid-template-columns: 1fr; }
+  .pd-lform { grid-template-columns: 1fr 1fr; }
+  .pd-lform button { grid-column: 1 / -1; }
+}

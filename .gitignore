@@ -1,0 +1,20 @@
+# Systemdateien
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Lokale Einstellungen von Claude Code
+.claude/settings.local.json
+
+# Datensicherungen und Exporte (enthalten Kundendaten)
+DTF-Kalkulator_Sicherung_*.json
+Auftraege_*.csv
+Rechnungsausgangsbuch_*.csv
+*.pdf
+
+# Persönliche Projektnotizen (nur lokal)
+DTF-Wissen.md

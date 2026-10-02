@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DTF-Kalkulator</title>
+<link rel="stylesheet" href="css/style.css?v=2.4">
+<link rel="stylesheet" href="css/mockup.css?v=2.4">
+<link rel="stylesheet" href="css/studio.css?v=2.4">
+<link rel="stylesheet" href="css/finanzen.css?v=2.4">
+<link rel="stylesheet" href="css/produktion.css?v=2.4">
+<link rel="stylesheet" href="css/verkauf.css?v=2.4">
+<!-- Gewähltes Farbschema sofort setzen, damit die Seite nicht kurz im falschen Modus aufblitzt -->
+<script>try { const t = localStorage.getItem('dtf-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+</head>
+<body>
+
+<!-- Symbole (werden mit icon('name') bzw. <svg><use href="#i-..."/></svg> eingesetzt) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z M8 3v5h7V3 M8 21v-7h8v7"/></symbol>
+  <symbol id="i-open" viewBox="0 0 24 24"><path d="M3 6h6l2 2h10v11H3z"/></symbol>
+  <symbol id="i-export" viewBox="0 0 24 24"><path d="M12 3v12 M7 10l5 5 5-5 M4 20h16"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4 M7 9l5-5 5 5 M4 20h16"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2 M12 20v2 M4.9 4.9l1.4 1.4 M17.7 17.7l1.4 1.4 M2 12h2 M20 12h2 M4.9 19.1l1.4-1.4 M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><path d="M9 9h11v11H9z M5 15H4V4h11v1"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16 M9 7V4h6v3 M6 7l1 13h10l1-13"/></symbol>
+  <symbol id="i-shirt" viewBox="0 0 24 24"><path d="M8 3 3 7l3 4 2-1v11h8V10l2 1 3-4-5-4c-.8 1.8-2.2 3-4 3S8.8 4.8 8 3z"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><path d="M4 4h16v16H4z M4 9h16 M4 15h16 M9 4v5 M15 15v5"/></symbol>
+  <symbol id="i-tool" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14 M5 12h14"/></symbol>
+  <symbol id="i-dup" viewBox="0 0 24 24"><path d="M8 8h12v12H8z M14 11v6 M11 14h6 M4 16V4h12"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2 20h20z M12 9v5 M12 17h.01"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6 M12 7.5h.01"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 2H6v20h12V6z M14 2v4h4 M9 13h6 M9 17h6"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></symbol>
+  <symbol id="i-scan" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></symbol>
+  <symbol id="i-truck" viewBox="0 0 24 24"><path d="M2 6h12v10H2z M14 10h4l3 3v3h-7 M6 19a2 2 0 1 0 0-.01 M17 19a2 2 0 1 0 0-.01"/></symbol>
+  <symbol id="i-euro" viewBox="0 0 24 24"><path d="M18 6.5A7 7 0 1 0 18 17.5 M4 10h10 M4 14h10"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11 M9 12h11 M9 18h11 M4 6h.01 M4 12h.01 M4 18h.01"/></symbol>
+</svg>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <div><strong>DTF-Kalkulator</strong><small>Kostenrechnung &amp; Angebote für Textildruck</small></div>
+  </div>
+  <nav class="nav" role="tablist" aria-label="Bereiche">
+    <button type="button" role="tab" data-view="auftrag" aria-selected="true">Auftrag</button>
+    <button type="button" role="tab" data-view="liste" aria-selected="false">Aufträge</button>
+    <button type="button" role="tab" data-view="produktion" aria-selected="false">Produktion</button>
+    <button type="button" role="tab" data-view="verkauf" aria-selected="false">Verkauf</button>
+    <button type="button" role="tab" data-view="kunden" aria-selected="false">Kunden</button>
+    <button type="button" role="tab" data-view="stats" aria-selected="false">Auswertung</button>
+    <button type="button" role="tab" data-view="einst" aria-selected="false">Einstellungen</button>
+  </nav>
+  <div class="actions">
+    <button id="openImport" class="ghost" type="button" title="Kundenanfrage aus Text, Excel, PDF oder Foto übernehmen"><svg class="i"><use href="#i-scan"/></svg><span>Infoblatt einlesen</span></button>
+    <button id="themeBtn" class="ghost icon" type="button" title="Hell/Dunkel umschalten" aria-label="Hell/Dunkel umschalten"><svg class="i"><use href="#i-sun"/></svg></button>
+    <button id="saveJob" class="primary" type="button" title="Auftrag speichern (Strg+S)"><svg class="i"><use href="#i-save"/></svg><span>Speichern</span></button>
+  </div>
+</header>
+
+<main>
+  <!-- ======================= AUFTRAG ======================= -->
+  <section id="view-auftrag" class="view">
+    <div class="jobgrid">
+      <section class="col-left">
+        <div class="panel">
+          <h2 class="sec">Auftrag</h2>
+          <label>Auftragsname<input id="j-name" data-job="name" maxlength="100" placeholder="z. B. Vereinsshirts Sommerfest"></label>
+          <div class="grid" style="margin-top:10px">
+            <label>Status<select id="j-status" data-job="status"></select></label>
+            <label>Angebotsdatum<input type="date" data-job="datum"></label>
+            <label>Liefertermin <span class="u">Text</span><input data-job="liefertermin" maxlength="60" placeholder="z. B. 10 Werktage"></label>
+            <label>Liefern bis <span class="u">Datum</span><input type="date" data-job="lieferDatum"></label>
+            <label>Produktion am<input type="date" data-job="prodDatum"></label>
+            <label>Angebots-Nr.<input data-job="angebotNr" maxlength="30" placeholder="automatisch"></label>
+          </div>
+          <div id="snapBox" class="callout" hidden></div>
+          <details class="more">
+            <summary>Weitere Nummern und Termine</summary>
+            <div class="grid">
+              <label>Auftragsbestätigung<input data-job="abNr" maxlength="30" placeholder="automatisch"></label>
+              <label>Lieferschein<input data-job="lsNr" maxlength="30" placeholder="automatisch"></label>
+              <label>Rechnungs-Nr.<input data-job="reNr" maxlength="30" placeholder="automatisch"></label>
+              <label>Rechnungsdatum<input type="date" data-job="reDatum"></label>
+              <label>Leistungsdatum<input type="date" data-job="leistungsDatum"></label>
+              <label>Bezahlt am<input type="date" data-job="bezahltAm"></label>
+              <label>Anzahlungsrechnung<input data-job="azNr" maxlength="30" placeholder="automatisch"></label>
+              <label>Anzahlung bezahlt am<input type="date" data-job="azBezahlt"></label>
+            </div>
+            <div id="finJobBox"></div>
+          </details>
+        </div>
+
+        <div class="panel">
+          <h2 class="sec">Kunde <button class="link right" id="toKunden" type="button">Kundenliste</button></h2>
+          <label>Aus Kundenliste<select id="j-kundeSel"></select></label>
+          <div class="grid" style="margin-top:10px">
+            <label class="span2">Firma / Name<input data-job="kunde" maxlength="100"></label>
+            <label class="span2">Ansprechpartner, Telefon, E-Mail<input data-job="kontakt" maxlength="160"></label>
+            <label class="span2">Adresse<textarea data-job="adresse" rows="2" maxlength="300"></textarea></label>
+            <label>USt-IdNr. Kunde<input data-job="kundeUstId" maxlength="20"></label>
+            <label>Kunden-Nr.<input data-job="kundeNr" maxlength="20"></label>
+          </div>
+          <div class="row" style="margin-top:10px"><button class="ghost mini" id="saveKundeFromJob" type="button"><svg class="i"><use href="#i-user"/></svg>Als Kunde speichern</button></div>
+        </div>
+
+        <div class="panel">
+          <h2 class="sec">Konditionen</h2>
+          <div class="grid">
+            <label>Gewinnzuschlag <span class="u">%</span><input type="number" data-job="gewinn" data-num step="1" min="0"></label>
+            <label>Kundenrabatt <span class="u">%</span><input type="number" data-job="rabatt" data-num step="0.5" min="0" max="90"></label>
+            <label>Skonto <span class="u">%</span><input type="number" data-job="skonto" data-num step="0.5" min="0" max="20"></label>
+            <label>Einrichtung <span class="u">€ netto</span><input type="number" data-job="pauschale" data-num step="1" min="0"></label>
+            <label>Expresszuschlag <span class="u">%</span><input type="number" data-job="express" data-num step="5" min="0" id="j-express"></label>
+            <label>Anzahlung <span class="u">%</span><input type="number" data-job="anzahlung" data-num step="10" min="0" max="100"></label>
+            <label class="span2">Folien-Anbieter<select id="j-anbieter"></select></label>
+            <label class="span2">Heißpresse<select id="j-presse"></select></label>
+          </div>
+          <label class="check"><input type="checkbox" data-job="sammel" data-bool><span>Sammelbestellung <small>Folie wird mit anderen Aufträgen zusammen bestellt, kein Mindestmeter</small></span></label>
+        </div>
+
+        <div class="panel">
+          <h2 class="sec">Versand und Zusatz</h2>
+          <div class="grid">
+            <label>Pakete <span class="u">0 = Abholung</span><input type="number" data-job="pakete" data-num step="1" min="0"></label>
+            <label>Zusatzarbeit <span class="u">Minuten</span><input type="number" data-job="zusatzMin" data-num step="5" min="0"></label>
+            <label class="span2">Sonstige Kosten <span class="u">€, z. B. Zubehör, Fahrt</span><input type="number" data-job="zusatzKosten" data-num step="1" min="0"></label>
+          </div>
+          <label class="check"><input type="checkbox" data-job="versandSeparat" data-bool><span>Versand als eigene Zeile <small>sonst steckt er in den Stückpreisen</small></span></label>
+          <label style="margin-top:12px">Interne Notiz<textarea data-job="notiz" rows="3" maxlength="1000" placeholder="steht nur auf dem Produktionsauftrag"></textarea></label>
+        </div>
+      </section>
+
+      <section class="col-mid">
+        <div class="panel">
+          <h2 class="sec">Positionen <span class="right mut" id="posCount"></span></h2>
+          <div id="varBox"></div>
+          <div id="positions"></div>
+          <div class="addbar" style="margin-top:12px">
+            <button class="ghost" type="button" data-add="textil"><svg class="i"><use href="#i-shirt"/></svg>Textil + Druck</button>
+            <button class="ghost" type="button" data-add="transfer"><svg class="i"><use href="#i-film"/></svg>Nur Transfers</button>
+            <button class="ghost" type="button" data-add="leistung"><svg class="i"><use href="#i-tool"/></svg>Leistung</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="col-right">
+        <div class="jobbar">
+          <div class="title"><strong id="jobTitle">Neuer Auftrag</strong><span class="state" id="saveState"></span></div>
+          <div class="row">
+            <button class="ghost mini" id="newJob" type="button"><svg class="i"><use href="#i-plus"/></svg>Neu</button>
+            <span class="timer" id="timerChip" hidden></span>
+            <button class="ghost mini" id="dupJob" type="button"><svg class="i"><use href="#i-copy"/></svg>Duplizieren</button>
+            <button class="ghost mini" id="btnVorlage" type="button" title="Diesen Auftrag als Vorlage speichern"><svg class="i"><use href="#i-save"/></svg>Als Vorlage</button>
+            <button class="ghost mini danger" id="delJob" type="button"><svg class="i"><use href="#i-trash"/></svg>Löschen</button>
+          </div>
+        </div>
+        <div id="msg" class="msg" hidden></div>
+
+        <div class="stats" aria-live="polite">
+          <div><span>Angebot netto</span><strong id="s-netto">–</strong><small id="s-brutto">–</small></div>
+          <div id="s-gewinn-box"><span id="s-gewinn-l">Gewinn</span><strong id="s-gewinn">–</strong><small id="s-gewinn2">–</small></div>
+          <div><span>Teile</span><strong id="s-teile">–</strong><small id="s-teile2">–</small></div>
+          <div><span>Folie</span><strong id="s-folie">–</strong><small id="s-folie2">–</small></div>
+          <div><span>Arbeitszeit</span><strong id="s-zeit">–</strong><small id="s-zeit2">–</small></div>
+        </div>
+
+        <div class="panel">
+          <h2 class="sec">Preisaufbau</h2>
+          <div class="profit">
+            <div class="gauge" id="gauge" data-s="good"><svg viewBox="0 0 36 36" aria-hidden="true"><circle class="track" cx="18" cy="18" r="15.915"/><circle class="val" id="g-val" cx="18" cy="18" r="15.915" pathLength="100"/></svg><div class="pct" id="g-pct">–</div></div>
+            <div><strong>Gewinn auf Selbstkosten</strong><p class="hint">Grün ab 10 %, gelb darunter, rot bei Verlust. Selbstkosten: <b id="g-sk">–</b></p></div>
+          </div>
+          <div class="pbar" id="s-bar" role="img" aria-label="Woraus sich der Preis zusammensetzt"></div>
+          <ul class="legend" id="s-legend"></ul>
+          <div class="warnbox" id="warn" hidden></div>
+          <div class="docs">
+            <button class="primary" type="button" data-doc="angebot"><svg class="i"><use href="#i-doc"/></svg>Angebot als PDF</button>
+            <button class="ghost" type="button" data-doc="freigabe"><svg class="i"><use href="#i-shirt"/></svg>Datenblatt / Freigabe</button>
+            <button class="ghost" type="button" data-doc="ab"><svg class="i"><use href="#i-check"/></svg>Auftragsbestätigung</button>
+            <button class="ghost" type="button" data-doc="anzahlung" id="btnAnzahlung"><svg class="i"><use href="#i-euro"/></svg>Anzahlungsrechnung</button>
+            <button class="ghost" type="button" data-doc="produktion"><svg class="i"><use href="#i-list"/></svg>Produktionsauftrag</button>
+            <button class="ghost" type="button" data-doc="lieferschein"><svg class="i"><use href="#i-truck"/></svg>Lieferschein</button>
+            <button class="ghost" type="button" data-doc="rechnung"><svg class="i"><use href="#i-euro"/></svg>Rechnung</button>
+            <button class="ghost" type="button" id="btnXRechnung" title="Rechnung als E-Rechnung (XRechnung, XML)"><svg class="i"><use href="#i-export"/></svg>E-Rechnung (XML)</button>
+            <button class="ghost" type="button" id="btnMail"><svg class="i"><use href="#i-doc"/></svg>E-Mail an Kunden</button>
+            <button class="ghost" type="button" id="btnMockup"><svg class="i"><use href="#i-shirt"/></svg>Mockup-Studio</button>
+          </div>
+          <div id="docExtraBox"></div>
+        </div>
+
+        <div class="panel">
+          <div class="tabs" role="tablist" aria-label="Details">
+            <button type="button" role="tab" data-tab="angebot" aria-selected="true">Angebot</button>
+            <button type="button" role="tab" data-tab="folie" aria-selected="false">Folie &amp; Gang Sheets</button>
+            <button type="button" role="tab" data-tab="schema" aria-selected="false">Kalkulation</button>
+            <button type="button" role="tab" data-tab="staffel" aria-selected="false">Staffelpreise</button>
+            <button type="button" role="tab" data-tab="nach" aria-selected="false">Nachkalkulation</button>
+          </div>
+
+          <div class="tabpanel" id="tab-angebot">
+            <div class="tablewrap"><table class="tbl">
+              <thead><tr><th>Position</th><th>Menge</th><th>Einzelpreis</th><th>Gesamt</th></tr></thead>
+              <tbody id="t-offer"></tbody>
+            </table></div>
+            <div class="two">
+              <label>Angebotstext zum Kopieren (z. B. für E-Mail)<textarea id="offerText" class="offertext" readonly></textarea>
+                <button class="ghost mini" id="copyBtn" type="button" style="margin-top:6px"><svg class="i"><use href="#i-copy"/></svg>Text kopieren</button></label>
+              <div class="stack">
+                <div class="box">
+                  <div class="sub" style="margin-top:0">Kunde nennt einen Preis?</div>
+                  <label>Preis des Kunden <span class="u">€ netto gesamt</span><input id="ziel" type="number" step="1" min="0"></label>
+                  <p class="hint" id="ziel-out" style="margin-top:8px">–</p>
+                </div>
+                <div class="box">
+                  <div class="sub" style="margin-top:0">Wunsch-Stückpreis?</div>
+                  <label>Preis pro Teil <span class="u">€ netto, alle Teile gleich</span><input id="zielStk" type="number" step="0.1" min="0"></label>
+                  <p class="hint" id="zielStk-out" style="margin-top:8px">–</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tabpanel" id="tab-folie" hidden>
+            <div class="sheet" id="sheetWrap"><canvas id="sheet" role="img" aria-label="Geplante Anordnung der Motive auf der Folie"></canvas></div>
+            <p class="hint" id="sheetInfo"></p>
+            <div class="sub">Anbieter im Vergleich</div>
+            <div class="tablewrap"><table class="tbl">
+              <thead><tr><th>Anbieter</th><th>Meter</th><th>€/m</th><th>Folienkosten</th><th>Angebot netto</th><th>Gewinn</th><th></th></tr></thead>
+              <tbody id="t-anbieter"></tbody>
+            </table></div>
+            <div class="sub">Motive auf der Folie</div>
+            <div class="tablewrap"><table class="tbl">
+              <thead><tr><th>Motiv</th><th>Stück</th><th>Maße</th><th>Lage</th></tr></thead>
+              <tbody id="t-motive"></tbody>
+            </table></div>
+            <div class="drop" id="sheetDrop">
+              <div><strong>Echte Gang Sheets</strong><p class="hint">PNG oder PDF der Datei, die du beim Anbieter bestellst. Gemessen werden Länge, bedruckte Fläche und bezahlte leere Folie. Oder ein Projekt aus dem Gang-Sheet-Konfigurator (.json) laden: Dann werden die Motive als Transfer-Positionen übernommen.</p></div>
+              <div class="row">
+                <label class="btn ghost" for="sheetFile"><svg class="i"><use href="#i-upload"/></svg>Gang Sheet messen<input id="sheetFile" class="sr" type="file" accept=".png,.pdf,.webp,image/png,image/webp,application/pdf" multiple></label>
+                <label class="btn ghost" for="gsProject"><svg class="i"><use href="#i-open"/></svg>Konfigurator-Projekt<input id="gsProject" class="sr" type="file" accept=".json,application/json"></label>
+              </div>
+            </div>
+            <div class="progress" id="sheetProg" hidden></div>
+            <div class="tablewrap"><table class="tbl">
+              <thead><tr><th>Datei</th><th>Breite cm</th><th>Länge</th><th>Bedruckt</th><th>Leer bezahlt</th><th>Kosten leer</th><th></th></tr></thead>
+              <tbody id="t-sheets"></tbody>
+            </table></div>
+            <p class="hint" id="sheetCompare" style="margin-top:10px"></p>
+          </div>
+
+          <div class="tabpanel" id="tab-schema" hidden>
+            <div class="tablewrap"><table class="tbl">
+              <thead><tr><th>Posten</th><th>Satz</th><th>Betrag</th><th>pro Teil</th></tr></thead>
+              <tbody id="t-schema"></tbody>
+            </table></div>
+            <div class="sub">Je Position</div>
+            <div class="tablewrap"><table class="tbl">
+              <thead id="t-pos-h"></thead><tbody id="t-pos"></tbody>
+            </table></div>
+            <div class="callout">
+              <div class="formula"><b>Zielverkaufspreis</b> = <span class="frac"><span>Barverkaufspreis</span><span>1 − Skonto</span></span></div>
+              <div class="formula"><b>Listenpreis</b> = <span class="frac"><span>Zielverkaufspreis</span><span>1 − Rabatt</span></span></div>
+              <div class="formula"><b>Maschinenkosten</b> = Presszeit × Maschinenstundensatz (<span id="f-mr">–</span>)</div>
+              <p class="hint">Skonto und Rabatt werden „im Hundert“ aufgeschlagen. Zieht der Kunde sie ab, bleibt genau der Barverkaufspreis übrig. Einrichtung, Express und Mindermengenzuschlag kommen zusätzlich dazu und erhöhen den Gewinn.</p>
+            </div>
+          </div>
+
+          <div class="tabpanel" id="tab-staffel" hidden>
+            <div class="tablewrap"><table class="tbl"><thead id="t-staffel-h"></thead><tbody id="t-staffel"></tbody></table></div>
+            <p class="hint" style="margin-top:10px">Preis pro Stück für Standardgrößen. Textil- und Transfer-Positionen werden im gleichen Verhältnis hoch- oder heruntergerechnet, Leistungen bleiben gleich. Eigene Mengen:</p>
+            <div class="row"><input id="staffelExtra" placeholder="z. B. 15, 75, 150" style="max-width:240px;margin:0"></div>
+          </div>
+
+          <div class="tabpanel" id="tab-nach" hidden>
+            <p class="hint">Nach dem Auftrag eintragen, was wirklich gebraucht wurde. Leere Felder zählen wie geplant. Sind Gang Sheets hochgeladen, wird deren Länge als echte Folie genommen.</p>
+            <div class="box" style="margin-bottom:12px">
+              <div class="row between"><div class="sub" style="margin:0">Zeiterfassung</div><button class="primary mini" id="timerBtn" type="button">Start</button></div>
+              <div id="timerList" class="mut" style="margin-top:8px"></div>
+            </div>
+            <div class="grid3">
+              <label>Echte Arbeitszeit <span class="u">Minuten, leer = Zeiterfassung</span><input data-ist="minuten" type="number" step="5" min="0"></label>
+              <label>Echte Folie <span class="u">Meter</span><input data-ist="meter" type="number" step="0.1" min="0"></label>
+              <label>Echte Folienkosten <span class="u">€, z. B. Anteil Sammelbestellung</span><input data-ist="folieKosten" type="number" step="0.5" min="0"></label>
+              <label>Fehldrucke <span class="u">Teile insgesamt</span><input data-ist="fehldrucke" type="number" step="1" min="0"></label>
+              <label class="span2">Ungeplante Kosten <span class="u">€ (Nachkauf, Fahrt …)</span><input data-ist="kosten" type="number" step="1" min="0"></label>
+            </div>
+            <div class="tablewrap" style="margin-top:12px"><table class="tbl">
+              <thead><tr><th>Posten</th><th>Geplant</th><th>Echt</th><th>Abweichung</th></tr></thead>
+              <tbody id="t-nach"></tbody>
+            </table></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <!-- ======================= AUFTRÄGE ======================= -->
+  <section id="view-liste" class="view wide" hidden>
+    <div id="todoBox"></div>
+    <div class="toolbar">
+      <div class="chips" id="listChips"></div>
+      <div class="row">
+        <input type="search" id="listSearch" placeholder="Auftrag, Kunde oder Nummer suchen">
+        <button class="ghost" id="csvBtn" type="button"><svg class="i"><use href="#i-export"/></svg>CSV</button>
+        <button class="ghost" id="btnBuchCsv" type="button" title="Rechnungsausgangsbuch für Steuerberater / Buchhaltung"><svg class="i"><use href="#i-euro"/></svg>Buchhaltung</button>
+        <button class="primary" id="newJob2" type="button"><svg class="i"><use href="#i-plus"/></svg>Neuer Auftrag</button>
+      </div>
+    </div>
+    <div class="panel" style="padding:0;overflow:hidden">
+      <div class="tablewrap" style="border:0;border-radius:0"><table class="tbl">
+        <thead><tr><th>Auftrag</th><th class="l">Status</th><th>Datum</th><th class="l">Nummern</th><th>Teile</th><th>Netto</th><th>Gewinn</th></tr></thead>
+        <tbody id="t-list"></tbody>
+      </table></div>
+    </div>
+    <p class="hint" id="listSum"></p>
+  </section>
+
+  <!-- ======================= PRODUKTION (js/produktion.js) ======================= -->
+  <section id="view-produktion" class="view wide" hidden></section>
+
+  <!-- ======================= VERKAUF (js/verkauf.js) ======================= -->
+  <section id="view-verkauf" class="view wide" hidden></section>
+
+  <!-- ======================= KUNDEN ======================= -->
+  <section id="view-kunden" class="view wide" hidden>
+    <div class="toolbar">
+      <input type="search" id="kSearch" placeholder="Kunde suchen">
+      <button class="primary" id="newKunde" type="button"><svg class="i"><use href="#i-plus"/></svg>Neuer Kunde</button>
+    </div>
+    <div class="panel" style="padding:0;overflow:hidden">
+      <div class="tablewrap" style="border:0;border-radius:0"><table class="tbl">
+        <thead><tr><th>Kunde</th><th class="l">Kontakt</th><th>Rabatt</th><th>Aufträge</th><th>Umsatz</th><th>Gewinn</th></tr></thead>
+        <tbody id="t-kunden"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ======================= AUSWERTUNG ======================= -->
+  <section id="view-stats" class="view wide" hidden>
+    <div class="toolbar"><div class="chips" id="periodChips"></div><span class="mut">Grundlage: gespeicherte Aufträge. Umsatz = bestätigte bis bezahlte Aufträge.</span></div>
+    <div class="stats" id="dashStats"></div>
+    <div class="two" style="margin-top:0">
+      <div class="panel"><h2 class="sec">Umsatz und Gewinn pro Monat <span class="right legend-inline"><span><i style="background:var(--acc)"></i>Umsatz</span><span><i style="background:var(--info)"></i>Gewinn</span></span></h2><svg class="chart" id="chart"></svg></div>
+      <div class="panel"><h2 class="sec">Aufträge nach Status</h2><div class="funnel" id="funnel"></div></div>
+    </div>
+    <div class="two" style="margin-top:0">
+      <div class="panel"><h2 class="sec">Beste Kunden</h2><div class="tablewrap"><table class="tbl"><thead><tr><th>Kunde</th><th>Aufträge</th><th>Umsatz</th><th>Gewinn</th></tr></thead><tbody id="t-top"></tbody></table></div></div>
+      <div class="panel"><h2 class="sec">Offene Posten</h2><div class="tablewrap"><table class="tbl"><thead><tr><th>Auftrag</th><th class="l">Status</th><th>Fällig</th><th>Betrag</th></tr></thead><tbody id="t-open"></tbody></table></div></div>
+    </div>
+  </section>
+
+  <!-- ======================= EINSTELLUNGEN ======================= -->
+  <section id="view-einst" class="view" hidden>
+    <p class="hint">Diese Werte gelten für alle Aufträge. Am Anfang stehen Beispielwerte drin. Trag deine echten Zahlen ein und speichere.</p>
+    <div class="setgrid">
+      <div class="panel">
+        <h2 class="sec">Firma</h2>
+        <p class="hint">Steht auf allen Dokumenten. Für Rechnungen brauchst du Steuernummer oder USt-IdNr. und eine Bankverbindung.</p>
+        <div class="grid">
+          <label class="span2">Firmenname<input data-set="fName" data-str maxlength="100"></label>
+          <label class="span2">Inhaber / Geschäftsführer<input data-set="fInhaber" data-str maxlength="100"></label>
+          <label class="span2">Adresse<textarea data-set="fAdresse" data-str rows="2" maxlength="200" placeholder="Straße Nr.&#10;PLZ Ort"></textarea></label>
+          <label class="span2">Kontakt <span class="u">eine Angabe pro Zeile</span><textarea data-set="fKontakt" data-str rows="3" maxlength="200" placeholder="Tel. 0123 456789&#10;info@firma.de&#10;www.firma.de"></textarea></label>
+          <label>Steuernummer<input data-set="fSteuerNr" data-str maxlength="30"></label>
+          <label>USt-IdNr.<input data-set="fUstId" data-str maxlength="20"></label>
+          <label class="span2">Bankverbindung<textarea data-set="fBank" data-str rows="2" maxlength="160" placeholder="IBAN DE00 0000 0000 0000 0000 00&#10;BIC XXXXDEXX · Bankname"></textarea></label>
+          <label class="span2">Zusatz in der Fußzeile <span class="u">optional, z. B. Handelsregister</span><input data-set="fFuss" data-str maxlength="200"></label>
+        </div>
+        <div class="sub">Logo</div>
+        <div class="logoprev"><img id="logoImg" alt="Logo" hidden><label class="btn ghost mini" for="logoFile"><svg class="i"><use href="#i-upload"/></svg>Logo laden (PNG/JPG)<input id="logoFile" class="sr" type="file" accept="image/png,image/jpeg"></label><button class="link" id="logoDel" type="button" hidden>Entfernen</button></div>
+      </div>
+
+      <div class="panel">
+        <h2 class="sec">Dokumente</h2>
+        <div class="grid4">
+          <label>Angebot<input data-set="praefixAN" data-str maxlength="6"></label>
+          <label>Bestätigung<input data-set="praefixAB" data-str maxlength="6"></label>
+          <label>Lieferschein<input data-set="praefixLS" data-str maxlength="6"></label>
+          <label>Rechnung<input data-set="praefixRE" data-str maxlength="6"></label>
+        </div>
+        <p class="mut" style="margin:6px 0 10px">Kürzel vor den Nummern, z. B. RE-2026-001. Gezählt wird pro Jahr automatisch.</p>
+        <div class="grid3">
+          <label>Angebot gültig <span class="u">Tage</span><input type="number" data-set="gueltigTage" step="1" min="1"></label>
+          <label>Zahlungsziel <span class="u">Tage</span><input type="number" data-set="zahlungsziel" step="1" min="0"></label>
+          <label>Skontofrist <span class="u">Tage</span><input type="number" data-set="skontoTage" step="1" min="0"></label>
+        </div>
+        <label style="margin-top:10px">Einleitung Angebot<textarea data-set="textAngebot" data-str rows="2" maxlength="400"></textarea></label>
+        <label style="margin-top:8px">Einleitung Auftragsbestätigung<textarea data-set="textAB" data-str rows="2" maxlength="400"></textarea></label>
+        <label style="margin-top:8px">Einleitung Rechnung<textarea data-set="textRechnung" data-str rows="2" maxlength="400"></textarea></label>
+        <label style="margin-top:8px">Schlusssatz<input data-set="textSchluss" data-str maxlength="200"></label>
+        <label class="check"><input type="checkbox" data-set="mockupImAngebot" data-bool><span>Mockups im Angebot <small>Seite „Ansicht Ihrer Textilien“ mit den Motiven auf dem Textil</small></span></label>
+      </div>
+
+      <div class="panel">
+        <h2 class="sec">Preise und Zuschläge</h2>
+        <div class="grid">
+          <label>Gewinnzuschlag <span class="u">% Standard</span><input type="number" data-set="gewinn" step="1" min="0"></label>
+          <label>Einrichtung <span class="u">€ Standard</span><input type="number" data-set="pauschale" step="1" min="0"></label>
+          <label>Mindestauftragswert <span class="u">€ netto</span><input type="number" data-set="minAuftrag" step="5" min="0"></label>
+          <label>Stückpreise runden
+            <select data-set="rundung" data-str>
+              <option value="0">nicht runden</option><option value="0.1">auf 10 Cent</option><option value="0.5">auf 50 Cent</option><option value="0.9">auf ,90</option><option value="1">auf ganze Euro</option>
+            </select></label>
+          <label>Mehrwertsteuer <span class="u">% (0 = § 19)</span><input type="number" data-set="mwst" step="1" min="0"></label>
+          <label>Expresszuschlag <span class="u">% Vorschlag</span><input type="number" data-set="express" step="5" min="0"></label>
+          <label>Anzahlung <span class="u">% Standard</span><input type="number" data-set="anzahlung" step="10" min="0" max="100"></label>
+          <label>Verpackung <span class="u">€ pro Teil</span><input type="number" data-set="verpackung" step="0.05" min="0"></label>
+          <label>Paket Einkauf <span class="u">€ pro Paket</span><input type="number" data-set="paketPreis" step="0.1" min="0"></label>
+          <label>Paket Verkauf <span class="u">€, als eigene Zeile</span><input type="number" data-set="paketVK" step="0.1" min="0"></label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 class="sec">Folien-Anbieter <button class="link right" id="addAnbieter" type="button">+ Anbieter</button></h2>
+        <p class="hint">Preis pro Laufmeter mit Mengenstaffel. „Eigendruck“, wenn du selbst druckst: dann Folie + Pulver pro Meter und Tinte pro m² bedruckter Fläche.</p>
+        <div id="anbieterList"></div>
+        <div class="sub">Für alle Anbieter</div>
+        <div class="grid">
+          <label>Abstand Motive <span class="u">cm</span><input type="number" data-set="abstand" step="0.1" min="0"></label>
+          <label>Ausschuss <span class="u">% Fehldrucke</span><input type="number" data-set="ausschuss" step="0.5" min="0"></label>
+          <label>Planungszuschlag <span class="u">% Länge</span><input type="number" data-set="folieZuschlag" step="1" min="0"></label>
+          <label>Sammelbestellung <span class="u">typisch m</span><input type="number" data-set="sammelMeter" step="1" min="0"></label>
+        </div>
+        <div class="callout" id="calib" hidden></div>
+      </div>
+
+      <div class="panel">
+        <h2 class="sec">Arbeitszeit</h2>
+        <div class="grid">
+          <label>Stundenlohn <span class="u">€ brutto</span><input type="number" data-set="lohn" step="0.5" min="0"></label>
+          <label>Lohnnebenkosten <span class="u">% (Arbeitgeber)</span><input type="number" data-set="lohnNK" step="1" min="0"></label>
+          <label>Rüstzeit <span class="u">Min. pro Auftrag</span><input type="number" data-set="ruestMin" step="5" min="0"></label>
+          <label>Pressen <span class="u">Sek. pro Druckstelle</span><input type="number" data-set="pressSek" step="5" min="0"></label>
+          <label>Handling <span class="u">Sek. pro Teil</span><input type="number" data-set="handlingSek" step="5" min="0"></label>
+          <label>Schneiden <span class="u">Sek. pro Transfer</span><input type="number" data-set="schneidSek" step="1" min="0"></label>
+          <label class="span2">Namen/Nummern <span class="u">Sek. Mehraufwand pro individuellem Druck (Daten, Sortieren)</span><input type="number" data-set="persSek" step="5" min="0"></label>
+        </div>
+        <p class="mut" style="margin-top:8px">Pressen: Auflegen, Pressen, Abziehen. Handling: Auspacken, Ausrichten, Falten. Eigene Presszeiten pro Artikel im Katalog.</p>
+      </div>
+
+      <div class="panel">
+        <h2 class="sec">Heißpressen <button class="link right" id="addPresse" type="button">+ Presse</button></h2>
+        <p class="hint">Maschinenstundensatz: Was eine Stunde Pressen an Abschreibung, Zinsen, Wartung und Strom kostet. Wird mit der reinen Presszeit verrechnet.</p>
+        <div id="presseList"></div>
+      </div>
+
+      <div class="panel">
+        <h2 class="sec">Gemeinkosten <button class="link right" id="addFix" type="button">+ Kostenpunkt</button></h2>
+        <p class="hint">Feste Kosten pro Monat. Daraus ergibt sich der Fertigungs-Zuschlag, statt ihn zu schätzen. Presse nicht hier eintragen, wenn sie oben als Maschine angelegt ist.</p>
+        <div id="fixList"></div>
+        <label style="margin-top:10px">Produktive Stunden pro Monat <span class="u">Zeit, in der wirklich gepresst wird</span><input type="number" data-set="prodStunden" step="1" min="1"></label>
+        <div class="callout" id="fixOut"></div>
+        <div class="grid3" style="margin-top:10px">
+          <label>Fertigung <span class="u">% auf Lohn</span><input type="number" data-set="fgk" step="1" min="0" id="s-fgk"></label>
+          <label>Material <span class="u">% auf Material</span><input type="number" data-set="mgk" step="1" min="0"></label>
+          <label>Verw. &amp; Vertrieb <span class="u">% auf HK</span><input type="number" data-set="vwvt" step="1" min="0"></label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 class="sec">Druckstellen-Vorlagen <button class="link right" id="addDs" type="button">+ Vorlage</button></h2>
+        <div id="dsList"></div>
+      </div>
+
+      <div class="panel">
+        <h2 class="sec">Daten</h2>
+        <p class="hint" id="storeInfo"></p>
+        <div class="stack">
+          <button class="ghost" id="backupBtn" type="button"><svg class="i"><use href="#i-export"/></svg>Datensicherung herunterladen</button>
+          <label class="btn ghost" for="restoreFile"><svg class="i"><use href="#i-upload"/></svg>Datensicherung einspielen<input id="restoreFile" class="sr" type="file" accept=".json,application/json"></label>
+          <button class="ghost" id="tplBtn" type="button"><svg class="i"><use href="#i-doc"/></svg>Excel-Auftragsblatt für Kunden</button>
+          <button class="ghost" id="testBtn" type="button"><svg class="i"><use href="#i-check"/></svg>Selbsttest der Rechnung</button>
+        </div>
+      </div>
+
+      <div class="panel span-all">
+        <h2 class="sec">Textil-Katalog <button class="link right" id="addCat" type="button">+ Artikel</button></h2>
+        <p class="hint">Einkaufspreise netto. Pressparameter stehen auf dem Produktionsauftrag. „Press s“ leer = Standard aus Arbeitszeit.</p>
+        <div class="tablewrap"><table class="tbl">
+          <thead><tr><th>Artikel</th><th class="l">Mockup-Form</th><th class="l">Kategorie</th><th class="l">Art.-Nr.</th><th class="l">Lieferant</th><th>EK hell</th><th>EK dunkel</th><th>+ XXL</th><th>+ 3XL</th><th class="ctr">Größen</th><th>Press s</th><th>°C</th><th>Zeit s</th><th class="l">Druck</th><th class="l">Abziehen</th><th></th></tr></thead>
+          <tbody id="t-cat"></tbody>
+        </table></div>
+      </div>
+    </div>
+    <div class="savebar"><div><span class="state" id="setState"></span><button class="link" id="resetSet" type="button">Beispielwerte laden</button><button class="primary" id="saveSet" type="button"><svg class="i"><use href="#i-save"/></svg>Einstellungen speichern</button></div></div>
+  </section>
+</main>
+
+<div class="mobilebar"><span>Netto <b id="mb-netto">–</b></span><span>Gewinn <b id="mb-gewinn">–</b></span></div>
+<div id="toasts" aria-live="polite"></div>
+
+<!-- Rückfrage -->
+<dialog id="askDlg" class="dlg">
+  <div class="dlg-icon"><svg class="i"><use href="#i-alert"/></svg></div>
+  <h3 id="askTitle"></h3>
+  <p id="askText"></p>
+  <div class="dlg-actions" id="askActions"></div>
+</dialog>
+
+<!-- Infoblatt einlesen -->
+<dialog id="impDlg" class="bigdlg">
+  <div class="head"><strong>Infoblatt einlesen</strong><button class="x" type="button" data-close aria-label="Schließen">×</button></div>
+  <div class="body">
+    <p class="hint">Füg den Text einer Kundenanfrage ein oder lade ein Infoblatt hoch (Excel, PDF oder Foto). Claude liest Artikel, Farben, Größen und Druckstellen aus und legt daraus einen neuen Auftrag an, den du prüfst.</p>
+    <label>Text, z. B. aus einer E-Mail<textarea id="impText" rows="6" placeholder="Hallo, wir bräuchten 25 schwarze T-Shirts (5 S, 10 M, 10 L) mit Logo vorne links ca. 10 cm und groß hinten …"></textarea></label>
+    <div class="drop" id="impDrop">
+      <span class="hint" id="impFileName" style="margin:0">Oder Datei hierher ziehen. Excel, CSV, PDF, Foto.</span>
+      <label class="btn ghost" for="impFile"><svg class="i"><use href="#i-upload"/></svg>Datei auswählen<input id="impFile" class="sr" type="file" accept=".xlsx,.xls,.csv,.pdf,.txt,image/*"></label>
+    </div>
+    <div class="progress" id="impProg" hidden></div>
+  </div>
+  <div class="foot">
+    <div class="row"><button class="link" id="tplBtn2" type="button">Leere Excel-Vorlage für Kunden</button>
+      <label class="btn ghost mini" for="impAnfrage" title="Datei aus dem Anfrageformular öffnen (ohne Claude)"><svg class="i"><use href="#i-open"/></svg>Anfrage-Datei öffnen<input id="impAnfrage" class="sr" type="file" accept=".json,application/json"></label></div>
+    <div class="row"><button class="ghost" id="impStop" type="button" hidden>Stopp</button><button class="primary" id="impGo" type="button"><svg class="i"><use href="#i-scan"/></svg>Auslesen</button></div>
+  </div>
+</dialog>
+
+<!-- Kunde bearbeiten -->
+<dialog id="kDlg" class="bigdlg">
+  <div class="head"><strong id="kDlgTitle">Kunde</strong><button class="x" type="button" data-close aria-label="Schließen">×</button></div>
+  <div class="body">
+    <div class="grid">
+      <label class="span2">Firma / Name<input id="k-firma" maxlength="100"></label>
+      <label>Ansprechpartner<input id="k-ansprech" maxlength="80"></label>
+      <label>Kunden-Nr.<input id="k-nr" maxlength="20" placeholder="automatisch"></label>
+      <label>Telefon<input id="k-tel" maxlength="40"></label>
+      <label>E-Mail<input id="k-email" type="email" maxlength="100"></label>
+      <label class="span2">Adresse<textarea id="k-adresse" rows="3" maxlength="300"></textarea></label>
+      <label>USt-IdNr.<input id="k-ust" maxlength="20"></label>
+      <label>Standard-Rabatt <span class="u">%</span><input id="k-rabatt" type="number" step="0.5" min="0" max="90"></label>
+      <label class="span2">Notiz<textarea id="k-notiz" rows="2" maxlength="500"></textarea></label>
+    </div>
+    <div class="sub">Aufträge</div>
+    <div id="k-jobs" class="mut">–</div>
+  </div>
+  <div class="foot">
+    <button class="ghost danger" id="kDel" type="button"><svg class="i"><use href="#i-trash"/></svg>Löschen</button>
+    <div class="row"><button class="ghost" id="kNewJob" type="button"><svg class="i"><use href="#i-plus"/></svg>Neuer Auftrag</button><button class="primary" id="kSave" type="button"><svg class="i"><use href="#i-save"/></svg>Speichern</button></div>
+  </div>
+</dialog>
+
+<!-- Selbsttest -->
+<dialog id="testDlg" class="bigdlg">
+  <div class="head"><strong>Selbsttest der Rechnung</strong><button class="x" type="button" data-close aria-label="Schließen">×</button></div>
+  <div class="body"><div class="testlist" id="testOut"></div></div>
+</dialog>
+
+<!-- Grundlagen -->
+<script src="js/core.js?v=2.4"></script>
+<script src="js/calc.js?v=2.4"></script>
+<script src="js/store.js?v=2.4"></script>
+<script src="js/pdf.js?v=2.4"></script>
+<script src="js/io.js?v=2.4"></script>
+<!-- Zusatzmodule (melden sich über Andockstellen in app.js / pdf.js an) -->
+<script src="js/garments.js?v=2.4"></script>
+<script src="js/mockup.js?v=2.4"></script>
+<script src="js/studio.js?v=2.4"></script>
+<script src="js/finanzen.js?v=2.4"></script>
+<script src="js/produktion.js?v=2.4"></script>
+<script src="js/verkauf.js?v=2.4"></script>
+<script src="js/anfrage.js?v=2.4"></script>
+<!-- Tests und Oberfläche (app.js zuletzt, startet alles) -->
+<script src="js/selftest.js?v=2.4"></script>
+<script src="js/app.js?v=2.4"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+/* Ansicht „Verkauf“ (js/verkauf.js): Preisliste, Vorlagen, Anfrageformular */
+
+.vk-head .tabs { margin-bottom: -4px; }
+.vk-head .hint { margin-bottom: 8px; }
+
+/* zwei Spalten auf breiten Bildschirmen */
+.vk-cols { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 16px; align-items: start; }
+@media (min-width: 1100px) { .vk-cols { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); } }
+.vk-mt { margin-top: 10px; }
+
+/* Produkte der Preisliste */
+.vk-prod:first-child { margin-top: 0; }
+.vk-prod .head input { flex: 1; min-width: 0; }
+.vk-prod .chips { margin-top: 2px; }
+.vk-prod .x, .vk-prod button.x { flex: none; }
+
+/* Vorschau */
+.vk-prev { position: sticky; top: calc(var(--top) + 12px); }
+@media (max-width: 1099px) { .vk-prev { position: static; } }
+.vk-cap { margin: 0 0 8px; }
+.vk-tbl td.vk-min { color: var(--amber); }
+.vk-tbl td.vk-miss { color: var(--warn); }
+.vk-tbl td strong { font-weight: 600; }
+.vk-tbl td:first-child { min-width: 150px; }
+.vk-extra { font-size: 12.5px; color: var(--mut); margin: 8px 0 0; }
+.vk-warn { border-left-color: var(--amber); }
+.vk-export { margin-top: 14px; }
+
+/* Vorlagen */
+.vk-tpls { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 0 12px; }
+.vk-tpl { display: flex; flex-direction: column; gap: 6px; }
+.vk-tpl .head input { flex: 1; min-width: 0; }
+.vk-tpl > input { margin-top: 0; font-size: 13px; }
+.vk-tplinfo { display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+
+/* Anfrageformular */
+.vk-subrow { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.vk-subrow .link { text-transform: none; letter-spacing: 0; font-size: 12px; }
+.vk-steps { margin: 0 0 6px; padding-left: 20px; font-size: 13.5px; }
+.vk-steps li { margin-bottom: 6px; }
+
+/* Handy */
+@media (max-width: 560px) {
+  .vk-prod .grid { grid-template-columns: 1fr; }
+  .vk-tpls { grid-template-columns: minmax(0, 1fr); }
+  .vk-export > button { flex: 1 1 auto; }
+}
+@media (max-width: 380px) {
+  .vk-head { padding: 12px; }
+  .vk-head .tabs button { padding: 9px 8px; font-size: 12.5px; }
+  .vk-tbl th, .vk-tbl td { padding: 6px 6px; }
+}
+
+/* Speichern-Leiste über der mobilen Zahlenleiste */
+@media (max-width: 900px) { #view-verkauf .savebar { bottom: 76px; } }
