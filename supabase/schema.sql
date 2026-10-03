@@ -163,6 +163,34 @@ grant execute on function public.einladungen_annehmen() to authenticated;
 grant execute on function public.naechste_nummer(uuid, text, int) to authenticated;
 grant execute on function public.zaehler_setzen(uuid, text, int, int) to authenticated;
 
+-- ---------- Datei-Speicher (Motivbilder der Gang-Sheet-Projekte) ----------
+-- Pfad immer: <firma_id>/<bereich>/<datei>. Zugriff nur für Mitglieder dieser Firma.
+insert into storage.buckets (id, name, public, file_size_limit)
+values ('dateien', 'dateien', false, 26214400)   -- max. 25 MB pro Datei
+on conflict (id) do nothing;
+
+create or replace function public.firma_aus_pfad(pfad text) returns uuid
+language plpgsql immutable as $$
+begin
+  return split_part(pfad, '/', 1)::uuid;
+exception when others then
+  return null;
+end $$;
+
+drop policy if exists dateien_lesen on storage.objects;
+create policy dateien_lesen on storage.objects for select to authenticated
+  using (bucket_id = 'dateien' and public.ist_mitglied(public.firma_aus_pfad(name)));
+drop policy if exists dateien_anlegen on storage.objects;
+create policy dateien_anlegen on storage.objects for insert to authenticated
+  with check (bucket_id = 'dateien' and public.ist_mitglied(public.firma_aus_pfad(name)));
+drop policy if exists dateien_aendern on storage.objects;
+create policy dateien_aendern on storage.objects for update to authenticated
+  using (bucket_id = 'dateien' and public.ist_mitglied(public.firma_aus_pfad(name)))
+  with check (bucket_id = 'dateien' and public.ist_mitglied(public.firma_aus_pfad(name)));
+drop policy if exists dateien_loeschen on storage.objects;
+create policy dateien_loeschen on storage.objects for delete to authenticated
+  using (bucket_id = 'dateien' and public.ist_mitglied(public.firma_aus_pfad(name)));
+
 -- ---------- Live-Abgleich zwischen Geräten (Realtime) ----------
 alter table public.docs replica identity full;
 do $$ begin

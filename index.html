@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>DTF-Kalkulator</title>
-<link rel="stylesheet" href="css/style.css?v=2.5">
-<link rel="stylesheet" href="css/mockup.css?v=2.5">
-<link rel="stylesheet" href="css/studio.css?v=2.5">
-<link rel="stylesheet" href="css/finanzen.css?v=2.5">
-<link rel="stylesheet" href="css/produktion.css?v=2.5">
-<link rel="stylesheet" href="css/verkauf.css?v=2.5">
+<link rel="stylesheet" href="css/style.css?v=2.6">
+<link rel="stylesheet" href="css/mockup.css?v=2.6">
+<link rel="stylesheet" href="css/studio.css?v=2.6">
+<link rel="stylesheet" href="css/finanzen.css?v=2.6">
+<link rel="stylesheet" href="css/produktion.css?v=2.6">
+<link rel="stylesheet" href="css/verkauf.css?v=2.6">
 <!-- Gewähltes Farbschema sofort setzen, damit die Seite nicht kurz im falschen Modus aufblitzt -->
 <script>try { const t = localStorage.getItem('dtf-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 </head>
@@ -242,6 +242,7 @@
               <div><strong>Echte Gang Sheets</strong><p class="hint">PNG oder PDF der Datei, die du beim Anbieter bestellst. Gemessen werden Länge, bedruckte Fläche und bezahlte leere Folie. Oder ein Projekt aus dem Gang-Sheet-Konfigurator (.json) laden: Dann werden die Motive als Transfer-Positionen übernommen.</p></div>
               <div class="row">
                 <label class="btn ghost" for="sheetFile"><svg class="i"><use href="#i-upload"/></svg>Gang Sheet messen<input id="sheetFile" class="sr" type="file" accept=".png,.pdf,.webp,image/png,image/webp,application/pdf" multiple></label>
+                <button class="primary" type="button" id="btnAnKonfig" title="Druckstellen mit Motivbildern im Gang-Sheet-Konfigurator öffnen"><svg class="i"><use href="#i-film"/></svg>An Konfigurator schicken</button>
                 <label class="btn ghost" for="gsProject"><svg class="i"><use href="#i-open"/></svg>Konfigurator-Projekt<input id="gsProject" class="sr" type="file" accept=".json,application/json"></label>
               </div>
             </div>
@@ -557,23 +558,24 @@
 </dialog>
 
 <!-- Grundlagen -->
-<script src="js/core.js?v=2.5"></script>
-<script src="js/calc.js?v=2.5"></script>
-<script src="js/store.js?v=2.5"></script>
-<script src="js/cloud-config.js?v=2.5"></script>
-<script src="js/cloud.js?v=2.5"></script>
-<script src="js/pdf.js?v=2.5"></script>
-<script src="js/io.js?v=2.5"></script>
+<script src="js/core.js?v=2.6"></script>
+<script src="js/calc.js?v=2.6"></script>
+<script src="js/store.js?v=2.6"></script>
+<script src="js/cloud-config.js?v=2.6"></script>
+<script src="js/cloud.js?v=2.6"></script>
+<script src="js/pdf.js?v=2.6"></script>
+<script src="js/io.js?v=2.6"></script>
 <!-- Zusatzmodule (melden sich über Andockstellen in app.js / pdf.js an) -->
-<script src="js/garments.js?v=2.5"></script>
-<script src="js/mockup.js?v=2.5"></script>
-<script src="js/studio.js?v=2.5"></script>
-<script src="js/finanzen.js?v=2.5"></script>
-<script src="js/produktion.js?v=2.5"></script>
-<script src="js/verkauf.js?v=2.5"></script>
-<script src="js/anfrage.js?v=2.5"></script>
+<script src="js/garments.js?v=2.6"></script>
+<script src="js/mockup.js?v=2.6"></script>
+<script src="js/studio.js?v=2.6"></script>
+<script src="js/finanzen.js?v=2.6"></script>
+<script src="js/produktion.js?v=2.6"></script>
+<script src="js/verkauf.js?v=2.6"></script>
+<script src="js/anfrage.js?v=2.6"></script>
 <!-- Tests und Oberfläche (app.js zuletzt, startet alles) -->
-<script src="js/selftest.js?v=2.5"></script>
-<script src="js/app.js?v=2.5"></script>
+<script src="js/uebergabe.js?v=2.6"></script>
+<script src="js/selftest.js?v=2.6"></script>
+<script src="js/app.js?v=2.6"></script>
 </body>
 </html>
