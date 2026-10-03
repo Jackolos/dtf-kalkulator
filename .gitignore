@@ -22,3 +22,6 @@ DTF-Wissen.md
 # Projektbeschreibung und Anleitung für Claude Code (nur lokal)
 README.md
 CLAUDE.md
+
+# Arbeitsordner für die Veröffentlichung (Zweig gh-pages, siehe tools/veroeffentlichen.ps1)
+.site/

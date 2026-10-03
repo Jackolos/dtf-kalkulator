@@ -1,4 +1,5 @@
 // Speichern und Laden.
+// Ist die Cloud eingerichtet und man angemeldet (js/cloud.js), liegen die Daten in Supabase.
 // Läuft die Seite als Claude-Artifact, gibt es eine Datenbank (window.claude.use('db')).
 // Sonst (Doppelklick auf index.html) landet alles im localStorage dieses Browsers.
 // Für die spätere Web-App muss nur dieses Modul gegen eine echte Datenbank getauscht werden.
@@ -28,9 +29,11 @@ const Store = {
     const use = (window.claude && window.claude.use) ? nm => window.claude.use(nm).catch(() => null) : () => Promise.resolve(null);
     use('sample').then(s => { this.caps.sample = s; });
     use('downloads').then(d => { this.caps.downloads = d; });
-    return use('db').then(db => {
+    const cloudP = typeof Cloud === 'object' ? Cloud.start() : Promise.resolve(null);
+    return cloudP.then(cdb => cdb || use('db')).then(db => {
+      if (typeof renderCloudChip === 'function') renderCloudChip();
       if (db) {
-        this.db = db; this.mode = 'db';
+        this.db = db; this.mode = db.cloud ? 'cloud' : 'db';
         db.doc('config/firma').get().then(snap => { if (snap.exists) cb.onSettings(snap.data()); }).catch(() => {});
         let first = true, firstK = true;
         db.collection('jobs').onSnapshot(snap => {
@@ -62,13 +65,13 @@ const Store = {
   _put(col, lsKey, id, data) {
     const list = this[col], ex = list.find(x => x.id === id);
     if (ex) ex.data = data; else list.push({ id, data });
-    if (this.mode === 'db') return this.db.collection(col).doc(id).set(data);
+    if (this.db) return this.db.collection(col).doc(id).set(data);
     const map = lsGet(lsKey) || {}; map[id] = data;
     return lsSet(lsKey, map) ? Promise.resolve() : Promise.reject({ code: 'storage_full' });
   },
   _del(col, lsKey, id) {
     this[col] = this[col].filter(x => x.id !== id);
-    if (this.mode === 'db') return this.db.collection(col).doc(id).delete();
+    if (this.db) return this.db.collection(col).doc(id).delete();
     const map = lsGet(lsKey) || {}; delete map[id]; lsSet(lsKey, map);
     return Promise.resolve();
   },
@@ -79,21 +82,33 @@ const Store = {
 
   saveSettings(S) {
     const data = clone(S);
-    if (this.mode === 'db') return this.db.doc('config/firma').set(data);
+    if (this.db) return this.db.doc('config/firma').set(data);
     return lsSet(LS.settings, data) ? Promise.resolve() : Promise.reject({ code: 'storage_full' });
   },
 
   // Fortlaufende Nummern: Angebote, Bestätigungen, Lieferscheine und Rechnungen pro Jahr, Kunden durchgehend
   _readCounter() {
-    if (this.mode === 'db') { const ref = this.db.doc('config/zaehler'); return ref.get().then(s => (s.exists ? s.data() : {}) || {}); }
+    if (this.db && this.db.readCounters) return this.db.readCounters();
+    if (this.db) { const ref = this.db.doc('config/zaehler'); return ref.get().then(s => (s.exists ? s.data() : {}) || {}); }
     return Promise.resolve(lsGet(LS.zaehler) || {});
   },
   _writeCounter(c) {
-    if (this.mode === 'db') return this.db.doc('config/zaehler').set(c);
+    if (this.db && this.db.setCounter) {   // Cloud: zuletzt vergebene Nummern setzen
+      const y = new Date().getFullYear(), t = [];
+      if (c.jahr === y) ['an', 'ab', 'ls', 're'].forEach(k => { if (n(c[k]) > 1) t.push(this.db.setCounter(k, y, n(c[k]) - 1)); });
+      if (n(c.kd) > 1) t.push(this.db.setCounter('kd', 0, n(c.kd) - 1));
+      return Promise.all(t);
+    }
+    if (this.db) return this.db.doc('config/zaehler').set(c);
     lsSet(LS.zaehler, c); return Promise.resolve();
   },
   nextNumber(kind, S) {
     const y = new Date().getFullYear();
+    const fmt = k => kind === 'kunde' ? 'K-' + (1000 + k) : ((S[DOCS[kind].pre] || '') ? S[DOCS[kind].pre] + '-' : '') + y + '-' + String(k).padStart(3, '0');
+    if (this.db && this.db.nextNumber) {   // Cloud: Nummer atomar auf dem Server
+      const key = kind === 'kunde' ? 'kd' : (DOCS[kind] && DOCS[kind].cnt) || 'an';
+      return this.db.nextNumber(key, kind === 'kunde' ? 0 : y).then(fmt);
+    }
     return this._readCounter().then(c => {
       if (c.next !== undefined && c.an === undefined) c.an = c.next;   // Zähler aus dem Prototyp übernehmen
       if (c.jahr !== y) { c.jahr = y; c.an = 1; c.ab = 1; c.ls = 1; c.re = 1; }

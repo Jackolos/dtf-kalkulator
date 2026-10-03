@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>DTF-Kalkulator</title>
-<link rel="stylesheet" href="css/style.css?v=2.4">
-<link rel="stylesheet" href="css/mockup.css?v=2.4">
-<link rel="stylesheet" href="css/studio.css?v=2.4">
-<link rel="stylesheet" href="css/finanzen.css?v=2.4">
-<link rel="stylesheet" href="css/produktion.css?v=2.4">
-<link rel="stylesheet" href="css/verkauf.css?v=2.4">
+<link rel="stylesheet" href="css/style.css?v=2.5">
+<link rel="stylesheet" href="css/mockup.css?v=2.5">
+<link rel="stylesheet" href="css/studio.css?v=2.5">
+<link rel="stylesheet" href="css/finanzen.css?v=2.5">
+<link rel="stylesheet" href="css/produktion.css?v=2.5">
+<link rel="stylesheet" href="css/verkauf.css?v=2.5">
 <!-- Gewähltes Farbschema sofort setzen, damit die Seite nicht kurz im falschen Modus aufblitzt -->
 <script>try { const t = localStorage.getItem('dtf-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 </head>
@@ -56,6 +56,7 @@
   </nav>
   <div class="actions">
     <button id="openImport" class="ghost" type="button" title="Kundenanfrage aus Text, Excel, PDF oder Foto übernehmen"><svg class="i"><use href="#i-scan"/></svg><span>Infoblatt einlesen</span></button>
+    <button id="cloudChip" class="cloudchip" type="button" hidden></button>
     <button id="themeBtn" class="ghost icon" type="button" title="Hell/Dunkel umschalten" aria-label="Hell/Dunkel umschalten"><svg class="i"><use href="#i-sun"/></svg></button>
     <button id="saveJob" class="primary" type="button" title="Auftrag speichern (Strg+S)"><svg class="i"><use href="#i-save"/></svg><span>Speichern</span></button>
   </div>
@@ -467,6 +468,11 @@
       </div>
 
       <div class="panel">
+        <h2 class="sec">Cloud &amp; Team</h2>
+        <div id="cloudBox"></div>
+      </div>
+
+      <div class="panel">
         <h2 class="sec">Daten</h2>
         <p class="hint" id="storeInfo"></p>
         <div class="stack">
@@ -551,21 +557,23 @@
 </dialog>
 
 <!-- Grundlagen -->
-<script src="js/core.js?v=2.4"></script>
-<script src="js/calc.js?v=2.4"></script>
-<script src="js/store.js?v=2.4"></script>
-<script src="js/pdf.js?v=2.4"></script>
-<script src="js/io.js?v=2.4"></script>
+<script src="js/core.js?v=2.5"></script>
+<script src="js/calc.js?v=2.5"></script>
+<script src="js/store.js?v=2.5"></script>
+<script src="js/cloud-config.js?v=2.5"></script>
+<script src="js/cloud.js?v=2.5"></script>
+<script src="js/pdf.js?v=2.5"></script>
+<script src="js/io.js?v=2.5"></script>
 <!-- Zusatzmodule (melden sich über Andockstellen in app.js / pdf.js an) -->
-<script src="js/garments.js?v=2.4"></script>
-<script src="js/mockup.js?v=2.4"></script>
-<script src="js/studio.js?v=2.4"></script>
-<script src="js/finanzen.js?v=2.4"></script>
-<script src="js/produktion.js?v=2.4"></script>
-<script src="js/verkauf.js?v=2.4"></script>
-<script src="js/anfrage.js?v=2.4"></script>
+<script src="js/garments.js?v=2.5"></script>
+<script src="js/mockup.js?v=2.5"></script>
+<script src="js/studio.js?v=2.5"></script>
+<script src="js/finanzen.js?v=2.5"></script>
+<script src="js/produktion.js?v=2.5"></script>
+<script src="js/verkauf.js?v=2.5"></script>
+<script src="js/anfrage.js?v=2.5"></script>
 <!-- Tests und Oberfläche (app.js zuletzt, startet alles) -->
-<script src="js/selftest.js?v=2.4"></script>
-<script src="js/app.js?v=2.4"></script>
+<script src="js/selftest.js?v=2.5"></script>
+<script src="js/app.js?v=2.5"></script>
 </body>
 </html>

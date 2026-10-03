@@ -1002,7 +1002,8 @@ function renderSettings() {
   const img = $('logoImg');
   if (S.fLogo) { img.src = S.fLogo; img.hidden = false; $('logoDel').hidden = false; } else { img.hidden = true; $('logoDel').hidden = true; }
   renderAnbieter(); renderPressen(); renderFixList(); renderDs(); renderCatalog(); renderCalib();
-  setText('storeInfo', Store.mode === 'db' ? 'Deine Daten liegen in der Datenbank dieses Claude-Artifacts.' : 'Deine Daten liegen nur in diesem Browser auf diesem Gerät (' + Store.jobs.length + ' Aufträge, ' + Store.kunden.length + ' Kunden). Lade regelmäßig eine Datensicherung herunter, z. B. vor dem Löschen des Browserverlaufs.');
+  if (typeof renderCloudBox === 'function') renderCloudBox();
+  setText('storeInfo', Store.mode === 'cloud' ? 'Deine Daten liegen in der Cloud (Firma „' + Cloud.firma.name + '“, ' + Store.jobs.length + ' Aufträge, ' + Store.kunden.length + ' Kunden). Eine Datensicherung als Datei schadet trotzdem nicht.' : Store.mode === 'db' ? 'Deine Daten liegen in der Datenbank dieses Claude-Artifacts.' : 'Deine Daten liegen nur in diesem Browser auf diesem Gerät (' + Store.jobs.length + ' Aufträge, ' + Store.kunden.length + ' Kunden). Lade regelmäßig eine Datensicherung herunter, z. B. vor dem Löschen des Browserverlaufs.');
 }
 function listRow(cols, kids) { return h('div', { class: 'lrow', style: 'grid-template-columns:' + cols }, kids); }
 function stdChip(on, onclick) { return h('button', { class: 'chip', type: 'button', 'aria-pressed': String(on), title: 'Als Standard für neue Aufträge', onclick }, [on ? 'Standard' : 'Als Standard']); }
@@ -1167,6 +1168,7 @@ function bindEvents() {
 
   $('saveJob').addEventListener('click', () => persistJob());
   $('timerBtn').addEventListener('click', toggleTimer);
+  $('cloudChip').addEventListener('click', () => { showView('einst'); setTimeout(() => { const b = $('cloudBox'); if (b) b.scrollIntoView({ block: 'center' }); }, 50); });
   $('timerChip').addEventListener('click', () => showTab('nach'));
   $('newJob').addEventListener('click', () => guardSwitch(() => newJob()));
   $('newJob2').addEventListener('click', () => guardSwitch(() => { newJob(); showView('auftrag'); }));
