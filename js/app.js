@@ -1168,6 +1168,9 @@ function bindEvents() {
 
   $('saveJob').addEventListener('click', () => persistJob());
   $('timerBtn').addEventListener('click', toggleTimer);
+  // Übergabe mit dem Gang-Sheet-Konfigurator (js/uebergabe.js)
+  $('btnAnKonfig').addEventListener('click', () => uebAnKonfigurator());
+  window.addEventListener('focus', () => uebPruefen());
   $('cloudChip').addEventListener('click', () => { showView('einst'); setTimeout(() => { const b = $('cloudBox'); if (b) b.scrollIntoView({ block: 'center' }); }, 50); });
   $('timerChip').addEventListener('click', () => showTab('nach'));
   $('newJob').addEventListener('click', () => guardSwitch(() => newJob()));
@@ -1348,6 +1351,6 @@ function showSelfTest() {
     },
     onKunden: () => { renderJobSelects(); if (view === 'kunden') renderKunden(); },
     onError: t => showMsg(t)
-  }).then(() => { if (view === 'einst') renderSettings(); });
+  }).then(() => { if (view === 'einst') renderSettings(); setTimeout(uebPruefen, 800); });
   if (/[?&]test\b/.test(location.search)) showSelfTest();
 })();
