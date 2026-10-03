@@ -7,7 +7,8 @@
 #   powershell -ExecutionPolicy Bypass -File tools\veroeffentlichen.ps1 -Nachricht "Was sich geändert hat"
 
 param([string]$Nachricht = 'Webseite aktualisieren')
-$ErrorActionPreference = 'Stop'
+# Nicht 'Stop': Git schreibt normale Statusmeldungen auf den Fehlerkanal, das würde das Skript abbrechen
+$ErrorActionPreference = 'Continue'
 
 $root = Split-Path $PSScriptRoot -Parent
 $site = Join-Path $root '.site'
